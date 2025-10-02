@@ -17,7 +17,21 @@ define("quill-nbb", [
     const postContainer = $(`.composer[data-uuid="${data.post_uuid}"]`);
     const targetEl = postContainer.find(".write-container div");
 
-    window.quill.init(targetEl, data);
+    window.quill.init(targetEl, data, function onQuillReady() {
+      // Find the toolbar Quill just created
+      const toolbarEl = targetEl.siblings(".ql-toolbar").length
+        ? targetEl.siblings(".ql-toolbar")
+        : targetEl.find(".ql-toolbar");
+
+      // Move it into the composer’s formatting bar
+      const bar = postContainer.find(".formatting-bar");
+      if (bar.length && toolbarEl.length) {
+        bar.addClass("has-quill");
+        bar.find(".ql-toolbar").remove(); // in case of re-opened composer
+        bar.empty();
+        bar.prepend(toolbarEl); // put toolbar on the left side
+      }
+    });
 
     const cidEl = postContainer.find(".category-list");
     if (cidEl.length) {
@@ -474,11 +488,12 @@ window.quill.configureToolbar = async (targetEl, data) => {
     };
   });
   // -- upload privileges
+  const formatBar = targetEl.closest(".composer").find(".formatting-bar");
   ["upload:post:file", "upload:post:image"].forEach((privilege) => {
     if (app.user.privileges[privilege]) {
       const name = privilege === "upload:post:image" ? "picture" : "upload";
       group.unshift(name);
-      toolbar.handlers[name] = toolbarHandlers[name].bind($(".formatting-bar"));
+      toolbar.handlers[name] = toolbarHandlers[name].bind(formatBar);
     }
   });
   toolbar.container.push(group);
@@ -494,6 +509,6 @@ window.quill.isEmpty = function (quill) {
     const value = contents.ops[0].insert.replace(/[\s\n]/g, "");
     return value === "";
   }
-s
+  s;
   return false;
 };

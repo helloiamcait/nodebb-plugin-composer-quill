@@ -1,15 +1,47 @@
 .composer {
+
+	/* Show the formatting bar; Quill's toolbar will be moved here */
 	.formatting-bar {
-		display: none!important;
+		display: flex;
+		/* restores visibility */
+		align-items: center;
+		gap: .5rem;
+	}
+
+	/* Hide the legacy formatting <ul> so only the Quill toolbar shows */
+	.formatting-bar .formatting-group {
+		display: none;
 	}
 
 	.write-container {
-		width: 100%!important;
-		min-width: 0px;	// fixes negation of overflow-wrap due this being a flex-item
+		width: 100% !important;
+		min-width: 0;
 
+		/* keep your long-line fix */
 		textarea {
 			display: none;
 		}
+
+		/* keep Quill-only editing */
+	}
+}
+
+/* Keep your Quill icon alignment tweaks */
+.ql-toolbar {
+	button>i {
+		float: left;
+		height: 100%;
+	}
+}
+
+/* (chat composer rules unchanged) */
+[component="chat/composer"] {
+	.ql-editor {
+		padding: 0;
+	}
+
+	[component="chat/input"] {
+		display: none;
 	}
 }
 
