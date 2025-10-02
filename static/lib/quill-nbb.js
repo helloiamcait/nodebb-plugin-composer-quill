@@ -27,8 +27,18 @@ define("quill-nbb", [
       const bar = postContainer.find(".formatting-bar");
       if (bar.length && toolbarEl.length) {
         bar.addClass("has-quill");
-        bar.find(".ql-toolbar").remove(); // in case of re-opened composer
+
+        // 1) Save the hidden upload form before clearing
+        const $fileForm = bar.find("#fileForm").detach(); // includes #files input
+
+        // 2) Clear the formatting bar
         bar.empty();
+
+        // 3) Put back the hidden upload form so NodeBB handlers still work
+        if ($fileForm && $fileForm.length) {
+          bar.append($fileForm);
+        }
+        
         bar.prepend(toolbarEl); // put toolbar on the left side
       }
     });
